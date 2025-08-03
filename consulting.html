@@ -505,24 +505,10 @@ footer {
 
   <script type="module">
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-// ✅ Replace with your Firebase project config
-const firebaseConfig = {
-  apiKey: "AIzaSyAPXYOQk3LPxayuymhac79P4QsX13xvMZA",
-      authDomain: "edu-navigator-cc4a0.firebaseapp.com",
-      projectId: "edu-navigator-cc4a0",
-      storageBucket: "edu-navigator-cc4a0.appspot.com",
-      messagingSenderId: "33607968332",
-      appId: "1:33607968332:web:59cbf34a0aae68375736e9"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+ 
 
     // Initialize EmailJS - replace 'YOUR_USER_ID' below with your actual EmailJS user ID
-    emailjs.init('XNuIdOImhADBCVO2-');
+    
 
     const bookingForm = document.getElementById('bookingForm');
     const toast = document.getElementById('toast');
@@ -608,26 +594,8 @@ const db = getFirestore(app);
         return;
       }
 
-      // For free sessions (or after payment for premium, you need a backend webhook to confirm)
-      // Here we simulate booking confirmation:
-
-      // 1. Send email notification via EmailJS
-      const emailParams = {
-        name,
-        email,
-        phone,
-        datetime: startDate.toLocaleString(),
-        counselor,
-        mode,
-        type,
-        notes,
-      };
-
-      try {
-        await emailjs.send("service_q19sf0g","template_1vqcw07",emailParams);
-      } catch (err) {
-        console.error('Email send failed', err);
-      }
+     
+ 
     
      
 // ✅ Save with student's name as document ID
@@ -688,3 +656,5 @@ try {
   
 </body>
 </html>
+
+
