@@ -1,21 +1,4 @@
-// signup.js
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider
-} from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
 
-// 🔐 Firebase Config (replace this with your actual config)
-const firebaseConfig = {
-  apiKey: "AIzaSyAPXYOQk3LPxayuymhac79P4QsX13xvMZA",
-    authDomain: "edu-navigator-cc4a0.firebaseapp.com",
-    projectId: "edu-navigator-cc4a0",
-    storageBucket: "edu-navigator-cc4a0.appspot.com",
-    messagingSenderId: "33607968332",
-    appId: "1:33607968332:web:59cbf34a0aae68375736e9"
-};
 
 // 🔧 Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -78,3 +61,4 @@ googleBtn.addEventListener("click", async (e) => {
     alert("Google sign-in failed: " + error.message);
   }
 });
+
