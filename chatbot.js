@@ -41,9 +41,6 @@ function appendMessage(sender, message) {
   messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
-async function getBotResponse(userMessage) {
-  const API_KEY = "AIzaSyAtbNRDp_zJsDohfLv0d-es2713vZCpukI"; // Replace with your real key
-   const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
   const instruction = `You are EduBot, an AI assistant for Edu Navia. 
 Only answer questions strictly related to Edu Navia’s features, such as: 
@@ -96,3 +93,4 @@ typingElement.classList.add("typing");
 // After fetch success:
 typingElement.remove();
 appendMessage("bot", botMessage);
+
