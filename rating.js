@@ -1,16 +1,3 @@
-// ✅ Replace with your Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyAPXYOQk3LPxayuymhac79P4QsX13xvMZA",
-    authDomain: "edu-navigator-cc4a0.firebaseapp.com",
-    projectId: "edu-navigator-cc4a0",
-    storageBucket: "edu-navigator-cc4a0.appspot.com",
-    messagingSenderId: "33607968332",
-    appId: "1:33607968332:web:59cbf34a0aae68375736e9"
-};
-
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
 
 const categories = [
   "Universities", "Courses", "Support", "Personality Test",
@@ -127,3 +114,4 @@ document.getElementById("submitAllBtn").onclick = () => {
     }
   });
 };
+
