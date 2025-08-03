@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduNavigator - Resources</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link href="resource.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <audio id="clickSound" preload="auto">
+  <source src="https://actions.google.com/sounds/v1/cartoon/magic_chime.ogg" type="audio/ogg">
+  Your browser does not support the audio element.
+</audio>
+
+</head>
+<body>
+  <!-- Header -->
+<header>
+  <div class="logo"><a href="index.html" style="color:black;text-decoration: none;">🎓 Edu Navia</a></div>
+  <nav>
+    <a href="p.html">Universities</a>
+    <a href="courses.html">Courses</a>
+    <a href="consulting.html">Consulting</a>
+    <a href="resource.html">Resources</a>
+  </nav>
+</header>
+
+
+  <section class="resource-grid" id="resourceGrid"></section>
+
+  <section id="resumeTool" class="tool-section">
+    <h2>📄 Resume Builder</h2>
+    <input type="text" id="resName" placeholder="Full Name" />
+    <input type="email" id="resEmail" placeholder="Email" />
+    <input type="text" id="resPhone" placeholder="Phone" />
+    <input type="text" id="resLinkedIn" placeholder="LinkedIn Profile URL" />
+    <input type="text" id="resGithub" placeholder="GitHub Profile URL" />
+    <textarea id="resSummary" placeholder="Professional Summary"></textarea>
+    <textarea id="resEducation" placeholder="Education"></textarea>
+    <textarea id="resSkills" placeholder="Skills (comma-separated)"></textarea>
+    <textarea id="resProjects" placeholder="Projects (one per line)"></textarea>
+    <textarea id="resExperience" placeholder="Experience"></textarea>
+    <textarea id="resCertifications" placeholder="Certifications (one per line)"></textarea>
+    <button onclick="playClickSound(); generateResume()">Generate Resume</button>
+    <button onclick="playClickSound();downloadResume()">Download as PDF</button>
+    <div id="resumeOutput"></div>
+    <div id="loadingSpinner"></div>
+
+  </section>
+
+  <section id="cgpaTool" class="tool-section">
+  <h2>📊 SGPA Calculator</h2>
+  <input type="number" id="subjectCount" placeholder="Enter Total Subjects" min="1" />
+  <button onclick="generateSubjectFields()">Add Subjects</button>
+
+  <div id="subjectInputs" style="margin-top: 1rem;"></div>
+
+  <button onclick="playClickSound();calculateSGPA()" style="margin-top: 1rem;">Calculate SGPA</button>
+  <div id="cgpaResult"></div>
+</section>
+<script src="resource.js"></script>
+
+</body>
+</html>
