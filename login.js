@@ -1,32 +1,3 @@
-// Firebase v11.9.0 imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-import {
-  getAuth,
-  setPersistence,
-  browserLocalPersistence,
-  browserSessionPersistence,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  sendPasswordResetEmail,
-  signOut,
-  GoogleAuthProvider,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
-
-// 🔐 Firebase config
-const firebaseConfig = {
-   apiKey: "AIzaSyAPXYOQk3LPxayuymhac79P4QsX13xvMZA",
-    authDomain: "edu-navigator-cc4a0.firebaseapp.com",
-    projectId: "edu-navigator-cc4a0",
-    storageBucket: "edu-navigator-cc4a0.appspot.com",
-    messagingSenderId: "33607968332",
-    appId: "1:33607968332:web:59cbf34a0aae68375736e9"
-};
-
-// ✅ Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
 
 // 🔧 DOM elements
 const loginForm = document.getElementById('login-form');
@@ -114,4 +85,5 @@ onAuthStateChanged(auth, (user) => {
     console.log("User signed in:", user.email);
   }
 });
+
 
