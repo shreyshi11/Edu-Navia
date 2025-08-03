@@ -1,26 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  getDocs,
-  collection,
-  arrayUnion,
-  arrayRemove
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// 🔧 Firebase Config
-const firebaseConfig = {
-   apiKey: "AIzaSyAPXYOQk3LPxayuymhac79P4QsX13xvMZA",
-    authDomain: "edu-navigator-cc4a0.firebaseapp.com",
-    projectId: "edu-navigator-cc4a0",
-    storageBucket: "edu-navigator-cc4a0.appspot.com",
-    messagingSenderId: "33607968332",
-    appId: "1:33607968332:web:59cbf34a0aae68375736e9"
-};
 
 // 🔄 Firebase Init 
 const app = initializeApp(firebaseConfig);
@@ -274,4 +252,5 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     Swal.fire("Error", "Could not update profile", "error");
   }
 });
+
 
