@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>University Search</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+  /* Base Layout Setup for Sticky Footer */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main Content Area */
+
+
+/* Heading */
+h1 {
+  text-align: center;
+  color: #0f766e;
+  margin-bottom: 2rem;
+}
+
+/* Filters Section */
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+select, button {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+button {
+  background: #0d9488;
+  color: white;
+  cursor: pointer;
+}
+
+
+.card {
+  background: linear-gradient(135deg, #a7f3d0, #fef9c3);
+  padding: 1.5rem;
+  border-radius: 20px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 35px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: #065f46;
+}
+
+.card p {
+  margin: 0.5rem 0;
+  color: #374151;
+}
+
+/* Modal for No Results */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  max-width: 400px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content h2 {
+  color: #ef4444;
+}
+
+.modal-content button {
+  margin-top: 1rem;
+  background: #0d9488;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .filters {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* ─── HEADER (Sticky Navbar) ─── */
+header {
+  background: #d0ebe6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00695c;
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nav a {
+  margin: 0 1rem;
+  color: #004d40;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+nav a:hover {
+  color: #009688;
+}
+
+/* ─── FOOTER (Sticky to Bottom) ─── */
+footer {
+  background-color: #00a88e;
+  color: #fff;
+  padding: 50px 20px;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-logo img {
+  max-width: 120px;
+  margin-bottom: 20px;
+}
+
+.social-icons {
+  margin: 25px 0;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.social-icon {
+  font-size: 32px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.social-icon:hover {
+  transform: scale(1.3);
+}
+
+.social-icon.instagram:hover { color: #e4405f; }
+.social-icon.mail:hover { color: #d44638; }
+.social-icon.telephone:hover { color: #34b7f1; }
+.social-icon.linkedin:hover { color: #0077b5; }
+.social-icon.facebook:hover { color: #3b5998; }
+.social-icon.whatsapp:hover { color: #25d366; }
+
+.contact-info {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #ccc;
+}
+
+.contact-info a {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+  color: #f1c40f;
+}
+.results {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;  /* Not full vertical center */
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding-top: 5vh;         /* Adds space from top */
+  padding-bottom: 5vh;      /* Adds space from bottom */
+  width: 100%;
+  min-height: 60vh;         /* Ensures it's not too close to top */
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+  </style>
+
+    <link rel="stylesheet" href="./global-features.css">
+</head>
+<body>
+  
+  <!-- Header -->
+<header>
+  <div class="logo"><a href="index.html" style="color:black;text-decoration: none;">🎓 Edu Navia</a></div>
+  <nav>
+    <a href="p.html">Universities</a>
+    <a href="courses.html">Courses</a>
+    <a href="consulting.html">Consulting</a>
+    <a href="resource.html">Resources</a>
+  </nav>
+  <!--<div class="auth-buttons">
+    <button class="login"><a href="login.html" style="color:black;text-decoration: none;">Login</a></button>
+      <button class="signup"><a href="signup.html" style="color:white;text-decoration: none;">Sign Up</a></button>
+  </div>-->
+</header>
+  <h1>🎓 Explore Universities</h1>
+
+  <div class="filters">
+    <select id="locationFilter">
+      <option value="">🌍 Select Location</option>
+    </select>
+    <select id="tierFilter">
+      <option value="">🏷️ Select Tier</option>
+    </select>
+    <button id="searchBtn">🔍 Search</button>
+  </div>
+
+  <div id="results" class="results"></div>
+<!-- Floating Guide Button -->
+<button id="guideBtn">💡 Guide</button>
+
+<!-- Slide-in Navi Panel -->
+<div id="naviPanel">
+  <div class="panel-content">
+    <button id="closeGuide">Close ✖</button>
+    <iframe src="guide.html"></iframe>
+  </div>
+</div>
+
+<style>
+#guideBtn {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  background: #00bfa6;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 30px;
+  cursor: pointer;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+#naviPanel {
+  position: fixed;
+  top: 70px;
+  left: -360px;
+  width: 360px;
+  height: calc(100% - 70px);
+  background: #f4f7fb;
+  box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+}
+
+#naviPanel .panel-content {
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#naviPanel iframe {
+  border: none;
+  flex: 1;
+  border-radius: 8px;
+}
+
+#closeGuide {
+  background: #009e89;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+/* =========================================================
+   ULTRA PREMIUM UI + DARK MODE (APPEND ONLY)
+   EduNavia • SaaS • Apple-level polish
+========================================================= */
+
+/* 🎛 Theme Variables */
+:root {
+  --bg-light: #f8fafc;
+  --bg-dark: #0b0f1a;
+
+  --glass-light: rgba(255, 255, 255, 0.72);
+  --glass-dark: rgba(17, 24, 39, 0.75);
+
+  --text-light: #0f172a;
+  --text-dark: #e5e7eb;
+
+  --card-light: linear-gradient(145deg, #ffffff, #ecfeff);
+  --card-dark: linear-gradient(145deg, #111827, #020617);
+
+  --border-light: rgba(255,255,255,0.35);
+  --border-dark: rgba(255,255,255,0.08);
+
+  --glow: 0 0 40px rgba(99,102,241,0.35);
+}
+
+/* 🌐 Global Theme Hook */
+body {
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+
+/* 🌑 Dark Mode Trigger */
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* 🌈 Background Glow */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(20,184,166,0.15), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(99,102,241,0.15), transparent 40%);
+  z-index: -1;
+}
+
+/* 🧊 Glass Containers */
+.glass-premium,
+header,
+.navbar,
+.modal-content,
+.panel-content {
+  background:  #00bfa6;
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-light);
+}
+
+body.dark .glass-premium,
+body.dark header,
+body.dark .navbar,
+body.dark .modal-content,
+body.dark .panel-content {
+  background: var(--glass-dark);
+  border-color: var(--border-dark);
+}
+
+/* 🧩 Cards */
+.card,
+.question-card,
+.resource-card,
+.university-card {
+  background: var(--card-light);
+  border-radius: 26px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+body.dark .card,
+body.dark .question-card,
+body.dark .resource-card,
+body.dark .university-card {
+  background: var(--card-dark);
+  border-color: var(--border-dark);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.6);
+}
+
+/* ✨ Card Hover Lift */
+.card:hover,
+.question-card:hover {
+  transform: translateY(-14px) scale(1.03);
+  box-shadow: var(--glow);
+}
+
+/* 🔘 Buttons */
+button,
+.btn {
+  background: linear-gradient(135deg, #14b8a6, #6366f1);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* 🌙 Toggle Switch */
+.theme-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #14b8a6);
+  box-shadow: 0 12px 35px rgba(99,102,241,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.theme-toggle i {
+  color: #fff;
+  font-size: 1.4rem;
+}
+/* 🌗 Theme Icon */
+.theme-icon {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #14b8a6, #6366f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+  z-index: 9999;
+}
+
+/* 📝 Inputs */
+input,
+textarea,
+select {
+  background: rgba(255,255,255,0.9);
+  border-radius: 14px;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: rgba(17,24,39,0.85);
+  color: #e5e7eb;
+}
+
+/* 🪄 Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #14b8a6, #6366f1);
+  border-radius: 8px;
+}
+
+/* 🎬 Premium Reveal Animation */
+.reveal {
+  animation: revealUp 0.9s ease forwards;
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+</style>
+<script>
+  const iconToggle = document.getElementById("themeToggle");
+
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    iconToggle.textContent = "☀️";
+  }
+
+  iconToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+
+    iconToggle.textContent = isDark ? "☀️" : "🌙";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+</script>
+
+<script>
+  const toggle = document.createElement("div");
+  toggle.className = "theme-toggle";
+  toggle.innerHTML = `<i class="fa-solid fa-moon"></i>`;
+  document.body.appendChild(toggle);
+
+  const icon = toggle.querySelector("i");
+
+  // Load saved theme
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    icon.classList.replace("fa-moon", "fa-sun");
+  }
+
+  toggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    const isDark = document.body.classList.contains("dark");
+
+    icon.classList.toggle("fa-sun", isDark);
+    icon.classList.toggle("fa-moon", !isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+</script>
+
+<script>
+const guideBtn = document.getElementById('guideBtn');
+const naviPanel = document.getElementById('naviPanel');
+const closeBtn = document.getElementById('closeGuide');
+
+guideBtn.addEventListener('click', () => {
+  naviPanel.style.left = '0';
+
+  // Send message to iframe to trigger speech
+  const iframe = naviPanel.querySelector('iframe');
+  iframe.contentWindow.postMessage({ action: 'speak', text: "Hi, I am NavEshrey, your Edu Navia guide. What would you like to do?" }, '*');
+});
+
+closeBtn.addEventListener('click', () => {
+  naviPanel.style.left = '-360px';
+});
+</script>
+
+  <!-- Modal -->
+  <div class="modal" id="noResultsModal">
+    <div class="modal-content">
+      <h2>😕 No Universities Found</h2>
+      <p>Try changing the filters and search again.</p>
+      <button onclick="closeModal()">Okay</button>
+    </div>
+  </div>
+ <!-- Footer Section -->
+
+  <!-- Firebase + JS -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+      storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+      appId: import.meta.env.VITE_FIREBASE_APP_ID
+    };
+
+    if (!firebaseConfig.apiKey) {
+      console.error("Firebase API Key is missing! Check your .env file.");
+    }
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const locationFilter = document.getElementById("locationFilter");
+    const tierFilter = document.getElementById("tierFilter");
+    const results = document.getElementById("results");
+
+    async function populateFilters() {
+      const snapshot = await getDocs(collection(db, "colleges"));
+      const locations = new Set();
+      const tiers = new Set();
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.location) locations.add(data.location);
+        if (data.type) tiers.add(data.type);
+      });
+
+      locations.forEach(loc => {
+        const option = document.createElement("option");
+        option.value = option.textContent = loc;
+        locationFilter.appendChild(option);
+      });
+
+      tiers.forEach(tier => {
+        const option = document.createElement("option");
+        option.value = option.textContent = tier;
+        tierFilter.appendChild(option);
+      });
+    }
+
+    async function searchUniversities() {
+      const loc = locationFilter.value;
+      const tier = tierFilter.value;
+
+      let q = collection(db, "colleges");
+
+      if (loc && tier) {
+        q = query(q, where("location", "==", loc), where("type", "==", tier));
+      } else if (loc) {
+        q = query(q, where("location", "==", loc));
+      } else if (tier) {
+        q = query(q, where("type", "==", tier));
+      }
+
+      const snap = await getDocs(q);
+      results.innerHTML = "";
+
+      if (snap.empty) {
+        document.getElementById("noResultsModal").style.display = "flex";
+        return;
+      }
+
+      snap.forEach(doc => {
+        const data = doc.data();
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <h3>${data.name || "Unnamed University"}</h3>
+          <p><strong>Location:</strong> ${data.location || "N/A"}</p>
+          <p><strong>Tier:</strong> ${data.type || "N/A"}</p>
+        `;
+        results.appendChild(card);
+      });
+    }
+
+    document.getElementById("searchBtn").addEventListener("click", searchUniversities);
+
+    window.closeModal = () => {
+      document.getElementById("noResultsModal").style.display = "none";
+    };
+
+    populateFilters();
+    function applyFilters() {
+  const tier = document.getElementById('tierFilter').value;
+  const location = document.getElementById('locationFilter').value;
+
+  const filtered = universities.filter(uni => {
+    const matchesTier = (tier === 'all' || uni.tier === tier);
+    const matchesLocation = (location === 'all' || uni.location === location);
+    return matchesTier && matchesLocation;
+  });
+
+  displayResults(filtered);
+}
+
+  </script>
+
+
+    <script src="./global-features.js" defer></script>
+</body>
+</html>

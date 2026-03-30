@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: edu-navia-unified-app
+    env: python
+    buildCommand: "npm install && npm run build && pip install -r backend/requirements.txt"
+    startCommand: "cd backend && python main.py"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
