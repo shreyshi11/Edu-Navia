@@ -19,7 +19,7 @@ export default defineConfig({
     'import.meta.env.VITE_FIREBASE_STORAGE_BUCKET': JSON.stringify("edu-navigator-cc4a0.appspot.com"),
     'import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID': JSON.stringify("33607968332"),
     'import.meta.env.VITE_FIREBASE_APP_ID': JSON.stringify("1:33607968332:web:59cbf34a0aae68375736e9"),
-    'import.meta.env.VITE_API_URL': JSON.stringify("https://edu-navia-api.onrender.com")
+    'import.meta.env.VITE_API_URL': JSON.stringify("https://edunavia.onrender.com")
   },
   server: {
     port: 3000,
