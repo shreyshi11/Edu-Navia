@@ -262,6 +262,13 @@ backend_dir = os.path.dirname(os.path.abspath(__file__))
 dist_dir = os.path.abspath(os.path.join(backend_dir, "..", "dist"))
 raw_dir = os.path.abspath(os.path.join(backend_dir, ".."))
 
+# --- BULLETPROOF ROUTING FOR RENDER ---
+@app.get("/")
+def serve_root():
+    if os.path.exists(os.path.join(dist_dir, "index.html")):
+        return FileResponse(os.path.join(dist_dir, "index.html"))
+    return FileResponse(os.path.join(raw_dir, "index.html"))
+
 if os.path.exists(dist_dir):
     print("Serving optimized production Vite build from /dist")
     app.mount("/", StaticFiles(directory=dist_dir, html=True), name="static")
