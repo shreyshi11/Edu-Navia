@@ -25,7 +25,8 @@ export async function updateRecommendations(wishlist) {
   
   try {
     // 1. Fetch ML Similarities from the robust Python Backend (Cosine Similarity)
-    const response = await fetch("/recommendations", {
+    const API_BASE = import.meta.env.DEV ? "" : (import.meta.env.VITE_API_URL || "");
+    const response = await fetch(`${API_BASE}/recommendations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wishlist: wishlist })
