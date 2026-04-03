@@ -25,7 +25,7 @@ window.submitForm = function(event) {
       console.log("Email sent successfully!");
 
       // 2️⃣ Send WhatsApp via backend
-      fetch("http://localhost:5000/register", {
+      fetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
