@@ -1,70 +1,58 @@
-# 🚀 Edu Navia - Complete Execution Roadmap
+# 🚀 Edu Navia - Simplified Roadmap
 
-Because Edu Navia is a modern, modular application, it utilizes a decoupled architecture where the **Frontend UI** and the **AI Backend** operate on separate engines.
-
-Here is the exact, step-by-step process you must follow to get the entire platform completely operational from a cold start.
+Edu Navia now uses a **Unified Backend Architecture**. You only need to run ONE command to launch the entire platform (Frontend + AI Model + Chatbot + WhatsApp Backend).
 
 ---
 
-## 🟢 Step 1: Start the Primary AI Engine (Backend)
-This runs the FastAPI server that loads your `.pkl` Machine Learning models into memory. It powers the Course Recommendations, the AI Predictor tools, and the University Wishlist AI.
+## 🟢 Option 1: Quick Local Development
+Use this when you are making changes to the UI and want to see updates instantly.
 
-1. Open a terminal in VS Code or PowerShell.
-2. Navigate into your backend folder:
-   ```powershell
-   cd "D:\Edu Navia\backend"
-   ```
-3. Run the Python start script:
-   ```powershell
-   python main.py
-   ```
-   *(Wait until you see the message: `✅ Models successfully loaded! Fast AI Recommendations are ON.`)*
+1.  **Terminal 1 (Backend - Unified API):**
+    ```powershell
+    cd "D:\Edu Navia\backend"
+    python main.py
+    ```
+    *Powers the AI Recommendations, Chatbot, and WhatsApp registration.*
 
----
-
-## 🟢 Step 2: Start the Frontend UI (Vite Server)
-This runs the Vite Development Server, securely handles your Firebase Environment Variables (`import.meta.env`), and automatically proxies any AI requests to the Python Backend you started in Step 1.
-
-1. Open a **brand new terminal window** (keep Step 1 running in the background).
-2. Ensure you are in the root directory:
-   ```powershell
-   cd "D:\Edu Navia"
-   ```
-3. Start the node server:
-   ```powershell
-   npm run dev
-   ```
-4. **Important:** After it starts, open the URL it provides (usually `http://localhost:3000`) in your browser to interact with the site. *Do not try to load the site from port 8000.*
-
----
-
-## 🟡 Optional Add-ons (Run only if needed)
-If you wish to test your extra features, you can launch them in completely separate terminals.
-
-### 1. The WhatsApp Webinar Registration Bot
-This runs your Flask server which uses `pywhatkit` to send automated WhatsApp confirmations to users who register for webinars.
-*   **Command:** 
+2.  **Terminal 2 (Frontend - Live Dev Mode):**
     ```powershell
     cd "D:\Edu Navia"
-    python app.py
+    npm run dev
     ```
-*   *(This runs safely on port 5000)*
-
-### 2. The Legacy / Alternate AI Engine
-If you have older HTML testing files configured to fetch AI insights from `ai2.py` rather than `main.py`.
-*   **Command:** 
-    ```powershell
-    cd "D:\Edu Navia"
-    uvicorn ai2:app --reload --port 8001
-    ```
-*   *(This safely runs on port 8001 so it avoids crashing `main.py`!)*
+    *Open the URL provided (default: http://localhost:3000).*
 
 ---
 
-### 🛑 Troubleshooting Guide
-*   **Error: `only one usage of each socket address`**
-    *   *Cause:* You tried to start a python script (`main.py` or `ai2.py`) on a port that is already in use by another terminal.
-    *   *Fix:* Close all your terminals and start fresh from Step 1.
-*   **Error: The AI recommendation sidebar doesn't show up**
-    *   *Cause:* Your frontend and backend aren't talking properly.
-    *   *Fix:* Make sure `python main.py` is actively running, and ensure your `vite.config.js` has the proxy properly configured routing to `http://127.0.0.1:8000`.
+## 💎 Option 2: Production-Style Launch (Single Command)
+This is the simplest way to run the entire app. It bundles the frontend and serves everything via Python.
+
+1.  **Build the Frontend (Only needed once):**
+    ```powershell
+    npm run build
+    ```
+    *This creates a optimized `dist` folder.*
+
+2.  **Launch the Unified Server:**
+    ```powershell
+    cd "D:\Edu Navia\backend"
+    python main.py
+    ```
+    *Visit http://localhost:8000. Your entire platform is now running from a single terminal!*
+
+---
+
+## 🔐 Environment Setup
+Ensure your [.env](file:///d:/Edu%20Navia/.env) file is configured in the root with these keys:
+- `VITE_FIREBASE_API_KEY` (and other Firebase keys)
+- `GEMINI_API_KEY` (for the AI Chatbot)
+- `VITE_API_URL=http://localhost:8000`
+
+---
+
+### 🛑 Status Checklist
+- [x] **Unified API:** Running on Port 8000.
+- [x] **Static Assets:** Build complete and served from `/dist`.
+- [x] **Models:** Loaded from `backend/models`.
+- [x] **Chatbot:** Active via `os.dotenv` integration in `main.py`.
+
+*No more separate `app.py` or Docker required! Just pure, fast execution.*

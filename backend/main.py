@@ -1,18 +1,24 @@
-from fastapi import FastAPI, HTTPException
+import uvicorn
+import requests
+import pywhatkit as kit
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from dotenv import load_dotenv
+import os
 import joblib
 import numpy as np
-import os
-import uvicorn
 from preprocessing import preprocess_input
 
-# Initialize backend endpoint server
-app = FastAPI(title="Edu Navia AI Recommendation System")
+# Load environment variables
+load_dotenv()
 
-# Enabled CORS cleanly so any frontend can call it 
+# Initialize backend endpoint server
+app = FastAPI(title="Edu Navia Unified Backend")
+
+# Enabled CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], 
@@ -21,7 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API Input Format specification
+# API Input Formats
 class PredictRequest(BaseModel):
     gender: str
     stream: str
@@ -30,6 +36,58 @@ class PredictRequest(BaseModel):
 
 class WishlistRequest(BaseModel):
     wishlist: list[str]
+
+class ChatRequest(BaseModel):
+    message: str
+
+class RegisterRequest(BaseModel):
+    name: str
+    phone: str
+    webinar: str
+
+# ----------------- CHATBOT & REGISTRATION ENDPOINTS -----------------
+
+@app.post("/chat")
+async def chat(req: ChatRequest):
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not configured on server")
+    
+    gemini_url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+    instruction = """
+    You are EduBot, AI assistant for Edu Navia.
+    Only answer questions related to: Universities, Courses, Consulting, Resources, 
+    University Comparison, Exam Tracker, and Exam Info.
+    If unrelated, reply: "I'm here to assist only with Edu Navia-related queries."
+    """
+    
+    payload = {
+        "contents": [{
+            "role": "user",
+            "parts": [{"text": f"{instruction}\n\nUser: {req.message}"}]
+        }]
+    }
+
+    try:
+        response = requests.post(f"{gemini_url}?key={api_key}", json=payload, timeout=15)
+        result = response.json()
+        bot_reply = result["candidates"][0]["content"]["parts"][0]["text"]
+        return {"reply": bot_reply}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
+
+@app.post("/register")
+async def register(req: RegisterRequest):
+    try:
+        message = f"Hi {req.name}, your Edu Navia webinar registration for '{req.webinar}' is confirmed! 🎓"
+        # Note: kit.sendwhatmsg_instantly usually requires a browser. 
+        # On a headless server (Render/Vercel), this may fail. Recommend using Twilio for production.
+        kit.sendwhatmsg_instantly(phone_no=req.phone, message=message, wait_time=10, tab_close=True)
+        return {"success": True, "message": "WhatsApp message sent!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"WhatsApp failed: {str(e)}")
+
+# ----------------- COURSE RECOMMENDATION ML MODEL (TF-IDF & Cosine Similarity) -----------------
 
 # ----------------- COURSE RECOMMENDATION ML MODEL (TF-IDF & Cosine Similarity) -----------------
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -205,6 +263,7 @@ def predict(data: PredictRequest):
         raise HTTPException(status_code=500, detail=f"Prediction Failed: {str(e)}")
 
 @app.post("/recommendations")
+@app.post("/recommend")
 def get_recommendations(req: WishlistRequest):
     """
     ML Route for localized Wishlist Course similarities using TF-IDF and Cosine Distances.
