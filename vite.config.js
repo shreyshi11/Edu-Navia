@@ -31,7 +31,8 @@ export default defineConfig(({ mode }) => {
         '/recommendations': 'http://127.0.0.1:8000',
         '/predict': 'http://127.0.0.1:8000',
         '/chat': 'http://127.0.0.1:8000',
-        '/register': 'http://127.0.0.1:8000'
+        '/register': 'http://127.0.0.1:8000',
+        '/cutoff-predict': 'http://127.0.0.1:8000'
       }
     },
     build: {

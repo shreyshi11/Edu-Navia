@@ -6,6 +6,7 @@
   <title>Edu Navia: Course Finder Quiz</title>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link href="personality_test.css" rel="stylesheet">
 
     <link rel="stylesheet" href="./global-features.css">
@@ -36,16 +37,20 @@
   <!-- Quiz Card -->
   <div class="quiz-container">
     <div id="quiz-intro">
-      <h1>Find Your Ideal Course</h1>
-      <p>Answer 25 questions to discover which course suits you best!</p>
-      <button id="start-btn">Start Quiz</button>
+      <h1>AI-Powered Course Finder</h1>
+      <p>Our adaptive algorithm selects questions based on your unique profile to find your perfect academic path!</p>
+      <button id="start-btn">Start AI Analysis</button>
     </div>
 
     <div id="quiz" style="display:none;">
+      <div id="progress" style="margin-bottom: 10px; font-weight: 600; color: #666; font-size: 0.9rem;">Question 1/10</div>
       <div id="question"></div>
       <ul id="answers"></ul>
       <div id="scale" class="scale-options" style="display:none;"></div>
-      <button id="next-btn" disabled>Next</button>
+      <div style="display: flex; justify-content: center; gap: 15px;">
+        <button id="back-btn" style="display: none;">Back</button>
+        <button id="next-btn" disabled>Next</button>
+      </div>
     </div>
 
     <div id="dashboard" style="display:none;">
@@ -169,7 +174,7 @@ closeBtn.addEventListener('click', () => {
 </script>
 
 
-    <script src="./global-features.js" defer></script>
+    <script src="public/global-features.js" defer></script>
 </body>
 </html>
 
