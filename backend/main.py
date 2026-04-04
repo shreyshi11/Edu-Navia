@@ -1,6 +1,5 @@
 import uvicorn
 import requests
-import pywhatkit as kit
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -11,6 +10,17 @@ import os
 import joblib
 import numpy as np
 from preprocessing import preprocess_input
+
+# --- 🚀 CLOUD COMPATIBILITY LAYER ---
+# pywhatkit depends on pyautogui which requires a DISPLAY (screen).
+# Headless servers (Render/Vercel) will crash on import.
+try:
+    import pywhatkit as kit
+    PYWHATKIT_AVAILABLE = True
+except Exception as e:
+    print(f"⚠️ Warning: pywhatkit disabled (Headless environment detected). Details: {e}")
+    kit = None
+    PYWHATKIT_AVAILABLE = False
 
 # Load environment variables
 load_dotenv()
@@ -87,10 +97,15 @@ async def chat(req: ChatRequest):
 async def register(req: RegisterRequest):
     try:
         message = f"Hi {req.name}, your Edu Navia webinar registration for '{req.webinar}' is confirmed! 🎓"
-        # Note: kit.sendwhatmsg_instantly usually requires a browser. 
-        # On a headless server (Render/Vercel), this may fail. Recommend using Twilio for production.
-        kit.sendwhatmsg_instantly(phone_no=req.phone, message=message, wait_time=10, tab_close=True)
-        return {"success": True, "message": "WhatsApp message sent!"}
+        
+        if PYWHATKIT_AVAILABLE and kit:
+            # Note: kit.sendwhatmsg_instantly usually requires a browser. 
+            kit.sendwhatmsg_instantly(phone_no=req.phone, message=message, wait_time=10, tab_close=True)
+            return {"success": True, "message": "WhatsApp message sent!"}
+        else:
+            print(f"📧 Cloud Registration Captured: {req.name} ({req.phone}) for {req.webinar}")
+            return {"success": True, "message": "Registration received! (WhatsApp disabled on cloud)"}
+            
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"WhatsApp failed: {str(e)}")
 
