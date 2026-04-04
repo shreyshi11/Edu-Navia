@@ -105,7 +105,7 @@ body {
     }
 
     .results {
-      max-width: 700px;
+      max-width: 800px;
       margin: 30px auto;
       padding: 20px;
     }
@@ -147,6 +147,34 @@ body {
       }
     }
 
+    /* Comparison Content Styles */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .comp-box {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid #f1f5f9;
+    }
+    .comp-box h4 {
+      margin: 0 0 10px 0;
+      color: #0d9488;
+      font-size: 1rem;
+    }
+    .comp-box p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #334155;
+    }
+    @media (max-width: 768px) {
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     /* Dark mode support */
     body.dark-mode {
       background-color: #121212;
@@ -163,7 +191,7 @@ body {
     }
 
     body.dark-mode .card,
-    body.dark-mode .modal-content {
+    body.dark-mode .comp-box {
       background-color: #0f766e;
       color: #e0e0e0;
     }
@@ -181,125 +209,3 @@ body {
     body, .card, header, .navbar, .footer {
       transition: background-color 0.3s ease, color 0.3s ease;
     }
-
-    #comparison-output {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fdfdfd;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .comparison-card {
-      background-color: #f0f6ff;
-      padding: 16px;
-      border: 1px solid #ccc;
-      margin-bottom: 20px;
-      border-radius: 10px;
-    }
-
-    /* 🔄 Responsive Design Adjustments */
-@media (max-width: 1024px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 16px;
-  }
-
-  .navbar nav {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .navbar nav a {
-    padding: 8px 0;
-    width: 100%;
-    text-align: left;
-    margin: 4px 0;
-  }
-
-  .navbar .auth-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
-  }
-
-  .dropdowns {
-    flex-direction: column;
-    width: 90%;
-    margin: 0 auto;
-  }
-
-  .compare-container {
-    padding: 0 16px;
-  }
-
-  .results {
-    width: 95%;
-    margin: 20px auto;
-    padding: 16px;
-  }
-
-  .card {
-    padding: 16px;
-  }
-
-  #compareBtn {
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-  }
-
-  .popup-box {
-    width: 90%;
-    padding: 20px;
-  }
-
-  .footer {
-    padding: 16px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 600px) {
-  body {
-    font-size: 15px;
-  }
-
-  .navbar .logo {
-    font-size: 20px;
-  }
-
-  .popup-box h2 {
-    font-size: 18px;
-  }
-
-  .popup-box p {
-    font-size: 13px;
-  }
-
-  .popup-box button {
-    font-size: 13px;
-    padding: 8px 20px;
-  }
-}
-  /* Custom Google Translate dropdown styling */
-#customTranslate {
-  background-color: #008080;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 10px;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-#customTranslate option {
-  background-color: #fff;
-  color: #000;
-}
-#customTranslate:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
