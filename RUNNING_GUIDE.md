@@ -1,51 +1,122 @@
-# 🚀 Edu Navia - Simplified Roadmap
+# 🚀 Edu Navia - Deployment Guide
 
-Edu Navia now uses a **Unified Backend Architecture**. You only need to run ONE command to launch the entire platform (Frontend + AI Model + Chatbot + WhatsApp Backend).
+Edu Navia uses a **Unified Backend Architecture** with organized project structure for easy deployment on Render.
 
----
-
-## 🟢 Option 1: Quick Local Development
-Use this when you are making changes to the UI and want to see updates instantly.
-
-1.  **Terminal 1 (Backend - Unified API):**
-    ```powershell
-    cd "D:\Edu Navia\backend"
-    python main.py
-    ```
-    *Powers the AI Recommendations, Chatbot, and WhatsApp registration.*
-
-2.  **Terminal 2 (Frontend - Live Dev Mode):**
-    ```powershell
-    cd "D:\Edu Navia"
-    npm run dev
-    ```
-    *Open the URL provided (default: http://localhost:3000).*
+## 📁 Project Structure
+```
+/workspaces/EduNavia/
+├── backend/          # FastAPI backend code
+├── frontend/         # Vite frontend source
+├── models/           # ML models (joblib)
+├── dist/             # Vite build output (auto-generated)
+├── dev/              # Development files and data
+└── render.yaml       # Render deployment config
+```
 
 ---
 
-## 💎 Option 2: Production-Style Launch (Single Command)
-This is the simplest way to run the entire app. It bundles the frontend and serves everything via Python.
+## 🟢 Local Development
 
-1.  **Build the Frontend (Only needed once):**
-    ```powershell
-    npm run build
-    ```
-    *This creates a optimized `dist` folder.*
+### Prerequisites
+- Node.js and npm
+- Python 3.10+
+- Git
 
-2.  **Launch the Unified Server:**
-    ```powershell
-    cd "D:\Edu Navia\backend"
-    python main.py
-    ```
-    *Visit http://localhost:8000. Your entire platform is now running from a single terminal!*
+### Setup Steps
+
+1. **Clone and navigate to project:**
+   ```bash
+   git clone <your-repo>
+   cd EduNavia
+   ```
+
+2. **Install frontend dependencies:**
+   ```bash
+   cd frontend
+   npm install
+   cd ..
+   ```
+
+3. **Install backend dependencies:**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   cd ..
+   ```
+
+4. **Build frontend:**
+   ```bash
+   cd frontend
+   npm run build
+   cd ..
+   ```
+
+5. **Start backend:**
+   ```bash
+   cd backend
+   python main.py
+   ```
+
+6. **Access the app:**
+   - Open http://localhost:8000 in your browser
+
+---
+
+## 🚀 Render Deployment
+
+### Automatic Deployment
+1. **Connect your GitHub repo to Render**
+2. **Create a new Web Service**
+3. **Use these settings:**
+   - **Build Command:** `cd frontend && npm install && npm run build && cd ../backend && pip install -r requirements.txt`
+   - **Start Command:** `cd backend && gunicorn -w 1 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT`
+   - **Python Version:** 3.10.0
+
+### Environment Variables (Set in Render Dashboard)
+- `GEMINI_API_KEY` - Your Google Gemini API key
+- `VITE_FIREBASE_API_KEY` - Firebase API key
+- `VITE_FIREBASE_AUTH_DOMAIN` - Firebase auth domain
+- `VITE_FIREBASE_PROJECT_ID` - Firebase project ID
+- `VITE_FIREBASE_STORAGE_BUCKET` - Firebase storage bucket
+- `VITE_FIREBASE_MESSAGING_SENDER_ID` - Firebase messaging sender ID
+- `VITE_FIREBASE_APP_ID` - Firebase app ID
+
+---
+
+## 🔧 Manual Commands for Codespaces
+
+If you need to run commands manually in GitHub Codespaces:
+
+```bash
+# Install frontend deps
+cd frontend && npm install
+
+# Build frontend
+cd frontend && npm run build
+
+# Install backend deps
+cd backend && pip install -r requirements.txt
+
+# Start server
+cd backend && python main.py
+```
 
 ---
 
 ## 🔐 Environment Setup
-Ensure your [.env](file:///d:/Edu%20Navia/.env) file is configured in the root with these keys:
-- `VITE_FIREBASE_API_KEY` (and other Firebase keys)
-- `GEMINI_API_KEY` (for the AI Chatbot)
-- `VITE_API_URL=http://localhost:8000`
+Create a `.env` file in the project root with:
+```
+GEMINI_API_KEY=your_gemini_api_key
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_firebase_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_firebase_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_firebase_app_id
+VITE_API_URL=http://localhost:8000
+```
+
+For production, set `VITE_API_URL` to your Render app URL.
 
 ---
 

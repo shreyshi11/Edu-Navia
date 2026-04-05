@@ -246,7 +246,7 @@ le_univ = None
 def load_assets():
     global course_model, univ_model, le_stream, le_course, le_univ
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(base_dir, 'models')
+    model_dir = os.path.join(base_dir, '..', 'models')
     
     try:
         # Load from disk using Joblib (fastest binary loader)
@@ -422,24 +422,27 @@ def get_recommendations(req: WishlistRequest):
             
     return {"recommended_courses": recommended, "explanation": explanation}
 
-# Dynamically locate the built Vue/Vite production folder OR fallback to raw root
+# Dynamically locate the built Vite production folder
 backend_dir = os.path.dirname(os.path.abspath(__file__))
 dist_dir = os.path.abspath(os.path.join(backend_dir, "..", "dist"))
-raw_dir = os.path.abspath(os.path.join(backend_dir, ".."))
+fallback_dir = os.path.abspath(os.path.join(backend_dir, "..", "frontend"))
 
 # --- BULLETPROOF ROUTING FOR RENDER ---
 @app.get("/")
 def serve_root():
     if os.path.exists(os.path.join(dist_dir, "index.html")):
         return FileResponse(os.path.join(dist_dir, "index.html"))
-    return FileResponse(os.path.join(raw_dir, "index.html"))
+    elif os.path.exists(os.path.join(fallback_dir, "ai.html")):
+        return FileResponse(os.path.join(fallback_dir, "ai.html"))
+    else:
+        return {"error": "Frontend not found"}
 
 if os.path.exists(dist_dir):
     print("Serving optimized production Vite build from /dist")
     app.mount("/", StaticFiles(directory=dist_dir, html=True), name="static")
-else:
+elif os.path.exists(fallback_dir):
     print("Serving raw frontend directory (Note: Vite env vars may fail without 'npm run build')")
-    app.mount("/", StaticFiles(directory=raw_dir, html=True), name="static")
+    app.mount("/", StaticFiles(directory=fallback_dir, html=True), name="static")
 
 # ----------------- PRODUCTION SERVER BINDING -----------------
 # When deployed independently (e.g. Render, Heroku), standard Python execution starts here
