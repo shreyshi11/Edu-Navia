@@ -407,8 +407,11 @@ def get_recommendations(req: WishlistRequest):
     ML Route for localized Wishlist Course similarities using TF-IDF and Cosine Distances.
     Allows React frontends to fetch dynamic similarity without static hardcoding.
     """
+    print(f"🔍 DEBUG: /recommendations called with: {req.wishlist}")
+    
     wishlist = req.wishlist
     if not wishlist:
+        print("⚠️ DEBUG: Empty wishlist")
         return {"recommended_courses": []}
         
     user_vector = np.zeros(tfidf_matrix.shape[1])
@@ -420,8 +423,13 @@ def get_recommendations(req: WishlistRequest):
             idx = courses_list.index(course)
             user_vector += tfidf_matrix[idx].toarray()[0]
             count += 1
+        else:
+            print(f"⚠️ DEBUG: Course '{course}' not found in courses_list")
             
+    print(f"🔍 DEBUG: Found {count} valid courses out of {len(wishlist)}")
+    
     if count == 0:
+        print("⚠️ DEBUG: No valid courses found")
         return {"recommended_courses": []}
         
     user_vector = user_vector / count

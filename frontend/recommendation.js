@@ -28,8 +28,9 @@ export async function updateRecommendations(wishlist) {
     const API_BASE = import.meta.env.DEV ? "" : (import.meta.env.VITE_API_URL || "");
     const endpoint = `${API_BASE}/recommendations`;
     
-    console.log("🔗 Connecting to recommendations API:", endpoint);
-    console.log("📍 Environment: DEV?", import.meta.env.DEV, "API_URL:", import.meta.env.VITE_API_URL);
+    console.log("🔗 [COURSES] Connecting to recommendations API:", endpoint);
+    console.log("📍 [COURSES] Environment: DEV?", import.meta.env.DEV, "API_URL:", import.meta.env.VITE_API_URL);
+    console.log("📤 [COURSES] Sending wishlist:", wishlist);
     
     const response = await fetch(endpoint, {
         method: "POST",
@@ -37,9 +38,11 @@ export async function updateRecommendations(wishlist) {
         body: JSON.stringify({ wishlist: wishlist })
     });
     
+    console.log("📥 [COURSES] Response status:", response.status);
+    
     if (!response.ok) {
         const errorText = await response.text();
-        console.error("❌ Backend Recommendation ML Failure", { 
+        console.error("❌ [COURSES] Backend Recommendation ML Failure", { 
             status: response.status, 
             statusText: response.statusText,
             endpoint: endpoint,
@@ -52,7 +55,7 @@ export async function updateRecommendations(wishlist) {
     }
     
     const data = await response.json();
-    const topRecommendations = data.recommended_courses || [];
+    console.log("✅ [COURSES] API Response:", data);
     const explanation = data.explanation || "";
 
     // 1.5 Handle empty logic gracefully (e.g. backend failed to map courses)
