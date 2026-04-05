@@ -104,9 +104,10 @@ cd backend && python main.py
 ---
 
 ## 🔐 Environment Setup
-Create a `.env` file in the project root with:
+
+### Frontend environment
+Create a `.env` file in `frontend/` with:
 ```
-GEMINI_API_KEY=your_gemini_api_key
 VITE_FIREBASE_API_KEY=your_firebase_api_key
 VITE_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
 VITE_FIREBASE_PROJECT_ID=your_firebase_project_id
@@ -116,7 +117,13 @@ VITE_FIREBASE_APP_ID=your_firebase_app_id
 VITE_API_URL=http://localhost:8000
 ```
 
-For production, set `VITE_API_URL` to your Render app URL.
+### Backend environment
+Create a `.env` file in `backend/` with:
+```
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+For production, set `VITE_API_URL` to your Render app URL and add backend secrets through the Render dashboard.
 
 ---
 
