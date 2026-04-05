@@ -303,20 +303,30 @@
       document.getElementById('results').style.display = 'none';
 
       try {
-        // Call backend API
-        const API_BASE = import.meta.env.DEV ? "" : (import.meta.env.VITE_API_URL || "");
-        const response = await fetch(`${API_BASE}/predict`, {
+        // Call backend API - use relative URL for same domain deployment
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://127.0.0.1:8000' : '';
+        const endpoint = `${API_BASE}/predict`;
+        
+        console.log('🔗 Calling API:', endpoint);
+        console.log('📤 Sending data:', formData);
+        
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         });
 
+        console.log('📥 Response status:', response.status);
+        
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorText = await response.text();
+          console.error('❌ API Error:', errorText);
+          const errorData = await response.json().catch(() => ({ detail: errorText }));
           throw new Error(errorData.detail || `HTTP ${response.status}: ${response.statusText}`);
         }
 
         const data = await response.json();
+        console.log('✅ API Response:', data);
         displayResults(data);
 
       } catch (error) {

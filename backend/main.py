@@ -269,10 +269,28 @@ def load_assets():
         import traceback
         print(f"⚠️ Full error: {traceback.format_exc()}")
 
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "models_loaded": {
+            "course_model": course_model is not None,
+            "univ_model": univ_model is not None,
+            "le_stream": le_stream is not None,
+            "le_course": le_course is not None,
+            "le_univ": le_univ is not None
+        },
+        "working_directory": os.getcwd(),
+        "backend_dir": os.path.dirname(os.path.abspath(__file__)),
+        "model_dir": os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'models'),
+        "model_dir_exists": os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'models'))
+    }
+
 @app.post("/predict")
 def predict(data: PredictRequest):
     print(f"🔍 DEBUG: /predict called with data: {data}")
     print(f"🔍 DEBUG: course_model loaded: {course_model is not None}")
+    print(f"🔍 DEBUG: univ_model loaded: {univ_model is not None}")
     
     if not course_model:
          print("❌ ERROR: course_model is None!")
