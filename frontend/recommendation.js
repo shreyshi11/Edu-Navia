@@ -26,14 +26,28 @@ export async function updateRecommendations(wishlist) {
   try {
     // 1. Fetch ML Similarities from the robust Python Backend (Cosine Similarity)
     const API_BASE = import.meta.env.DEV ? "" : (import.meta.env.VITE_API_URL || "");
-    const response = await fetch(`${API_BASE}/recommendations`, {
+    const endpoint = `${API_BASE}/recommendations`;
+    
+    console.log("🔗 Connecting to recommendations API:", endpoint);
+    console.log("📍 Environment: DEV?", import.meta.env.DEV, "API_URL:", import.meta.env.VITE_API_URL);
+    
+    const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ wishlist: wishlist })
     });
     
     if (!response.ok) {
-        console.error("Backend Recommendation ML Failure", response);
+        const errorText = await response.text();
+        console.error("❌ Backend Recommendation ML Failure", { 
+            status: response.status, 
+            statusText: response.statusText,
+            endpoint: endpoint,
+            error: errorText 
+        });
+        emptyMsg.style.display = "block";
+        emptyMsg.textContent = "⚠️ Backend service temporarily unavailable";
+        grid.style.display = "none";
         return;
     }
     
@@ -102,6 +116,17 @@ export async function updateRecommendations(wishlist) {
       }
     });
   } catch(err) {
-      console.error("AI Recommendation Backend is offline or failed:", err);
+      console.error("❌ AI Recommendation Backend is offline or failed:", {
+          error: err.message,
+          stack: err.stack,
+          cause: err.cause
+      });
+      if (emptyMsg) {
+          emptyMsg.style.display = "block";
+          emptyMsg.textContent = "⚠️ AI Recommendations temporarily unavailable. Try refreshing the page.";
+      }
+      if (grid) {
+          grid.style.display = "none";
+      }
   }
 }

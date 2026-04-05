@@ -20,6 +20,10 @@ export default defineConfig(({ mode }) => {
     ...process.env
   };
 
+  // On Render, VITE_API_URL should be empty to use relative paths (same domain)
+  // For local dev with separate backend, use http://127.0.0.1:8000
+  const apiUrl = mode === 'production' ? '' : 'http://127.0.0.1:8000';
+
   return {
     define: {
       'import.meta.env.VITE_FIREBASE_API_KEY': JSON.stringify(envWithProcess.VITE_FIREBASE_API_KEY || ''),
@@ -28,7 +32,7 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.VITE_FIREBASE_STORAGE_BUCKET': JSON.stringify(envWithProcess.VITE_FIREBASE_STORAGE_BUCKET || ''),
       'import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID': JSON.stringify(envWithProcess.VITE_FIREBASE_MESSAGING_SENDER_ID || ''),
       'import.meta.env.VITE_FIREBASE_APP_ID': JSON.stringify(envWithProcess.VITE_FIREBASE_APP_ID || ''),
-      'import.meta.env.VITE_API_URL': JSON.stringify(envWithProcess.VITE_API_URL || "http://localhost:8000")
+      'import.meta.env.VITE_API_URL': JSON.stringify(envWithProcess.VITE_API_URL || apiUrl)
     },
     server: {
       port: 3000,

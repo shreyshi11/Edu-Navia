@@ -427,22 +427,33 @@ backend_dir = os.path.dirname(os.path.abspath(__file__))
 dist_dir = os.path.abspath(os.path.join(backend_dir, "..", "dist"))
 fallback_dir = os.path.abspath(os.path.join(backend_dir, "..", "frontend"))
 
+print(f"📁 Backend directory: {backend_dir}")
+print(f"📁 Looking for dist at: {dist_dir}")
+print(f"📁 Fallback frontend at: {fallback_dir}")
+print(f"📁 dist exists: {os.path.exists(dist_dir)}")
+print(f"📁 frontend exists: {os.path.exists(fallback_dir)}")
+
 # --- BULLETPROOF ROUTING FOR RENDER ---
 @app.get("/")
 def serve_root():
     if os.path.exists(os.path.join(dist_dir, "index.html")):
+        print("✅ Serving from /dist/index.html")
         return FileResponse(os.path.join(dist_dir, "index.html"))
     elif os.path.exists(os.path.join(fallback_dir, "ai.html")):
+        print("⚠️ Serving from /frontend/ai.html (dist not found)")
         return FileResponse(os.path.join(fallback_dir, "ai.html"))
     else:
+        print("❌ ERROR: Frontend index.html not found!")
         return {"error": "Frontend not found"}
 
 if os.path.exists(dist_dir):
-    print("Serving optimized production Vite build from /dist")
+    print("✅ Serving optimized production Vite build from /dist")
     app.mount("/", StaticFiles(directory=dist_dir, html=True), name="static")
 elif os.path.exists(fallback_dir):
-    print("Serving raw frontend directory (Note: Vite env vars may fail without 'npm run build')")
+    print("⚠️ Serving raw frontend directory (Note: Vite env vars may fail without 'npm run build')")
     app.mount("/", StaticFiles(directory=fallback_dir, html=True), name="static")
+else:
+    print("❌ ERROR: Neither /dist nor /frontend directories found!")
 
 # ----------------- PRODUCTION SERVER BINDING -----------------
 # When deployed independently (e.g. Render, Heroku), standard Python execution starts here
