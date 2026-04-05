@@ -56,6 +56,7 @@ export async function updateRecommendations(wishlist) {
     
     const data = await response.json();
     console.log("✅ [COURSES] API Response:", data);
+    const topRecommendations = data.recommended_courses || [];
     const explanation = data.explanation || "";
 
     // 1.5 Handle empty logic gracefully (e.g. backend failed to map courses)
