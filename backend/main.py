@@ -248,6 +248,14 @@ def load_assets():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     model_dir = os.path.join(base_dir, '..', 'models')
     
+    print(f"🔍 DEBUG: base_dir = {base_dir}")
+    print(f"🔍 DEBUG: model_dir = {model_dir}")
+    print(f"🔍 DEBUG: model_dir exists = {os.path.exists(model_dir)}")
+    
+    if os.path.exists(model_dir):
+        model_files = os.listdir(model_dir)
+        print(f"🔍 DEBUG: model files = {model_files}")
+    
     try:
         # Load from disk using Joblib (fastest binary loader)
         course_model = joblib.load(os.path.join(model_dir, 'course_model.pkl'))
@@ -258,10 +266,16 @@ def load_assets():
         print("✅ Models successfully loaded! Fast AI Recommendations are ON.")
     except Exception as e:
         print(f"⚠️ Warning: Models not found in {model_dir}. Need to run 'python model.py' to generate files. Details: {e}")
+        import traceback
+        print(f"⚠️ Full error: {traceback.format_exc()}")
 
 @app.post("/predict")
 def predict(data: PredictRequest):
+    print(f"🔍 DEBUG: /predict called with data: {data}")
+    print(f"🔍 DEBUG: course_model loaded: {course_model is not None}")
+    
     if not course_model:
+         print("❌ ERROR: course_model is None!")
          raise HTTPException(status_code=500, detail="Models missing on server. Run model.py to train them first.")
     
     try:
