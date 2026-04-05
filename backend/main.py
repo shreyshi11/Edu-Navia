@@ -246,7 +246,15 @@ le_univ = None
 def load_assets():
     global course_model, univ_model, le_stream, le_course, le_univ
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    model_dir = os.path.join(base_dir, 'models')
+    model_dir = os.path.join(base_dir, '..', 'models')
+    
+    print(f"🔍 DEBUG: base_dir = {base_dir}")
+    print(f"🔍 DEBUG: model_dir = {model_dir}")
+    print(f"🔍 DEBUG: model_dir exists = {os.path.exists(model_dir)}")
+    
+    if os.path.exists(model_dir):
+        model_files = os.listdir(model_dir)
+        print(f"🔍 DEBUG: model files = {model_files}")
     
     try:
         # Load from disk using Joblib (fastest binary loader)
@@ -258,10 +266,34 @@ def load_assets():
         print("✅ Models successfully loaded! Fast AI Recommendations are ON.")
     except Exception as e:
         print(f"⚠️ Warning: Models not found in {model_dir}. Need to run 'python model.py' to generate files. Details: {e}")
+        import traceback
+        print(f"⚠️ Full error: {traceback.format_exc()}")
+
+@app.get("/health")
+def health_check():
+    return {
+        "status": "healthy",
+        "models_loaded": {
+            "course_model": course_model is not None,
+            "univ_model": univ_model is not None,
+            "le_stream": le_stream is not None,
+            "le_course": le_course is not None,
+            "le_univ": le_univ is not None
+        },
+        "working_directory": os.getcwd(),
+        "backend_dir": os.path.dirname(os.path.abspath(__file__)),
+        "model_dir": os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'models'),
+        "model_dir_exists": os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'models'))
+    }
 
 @app.post("/predict")
 def predict(data: PredictRequest):
+    print(f"🔍 DEBUG: /predict called with data: {data}")
+    print(f"🔍 DEBUG: course_model loaded: {course_model is not None}")
+    print(f"🔍 DEBUG: univ_model loaded: {univ_model is not None}")
+    
     if not course_model:
+         print("❌ ERROR: course_model is None!")
          raise HTTPException(status_code=500, detail="Models missing on server. Run model.py to train them first.")
     
     try:
@@ -375,8 +407,11 @@ def get_recommendations(req: WishlistRequest):
     ML Route for localized Wishlist Course similarities using TF-IDF and Cosine Distances.
     Allows React frontends to fetch dynamic similarity without static hardcoding.
     """
+    print(f"🔍 DEBUG: /recommendations called with: {req.wishlist}")
+    
     wishlist = req.wishlist
     if not wishlist:
+        print("⚠️ DEBUG: Empty wishlist")
         return {"recommended_courses": []}
         
     user_vector = np.zeros(tfidf_matrix.shape[1])
@@ -388,8 +423,13 @@ def get_recommendations(req: WishlistRequest):
             idx = courses_list.index(course)
             user_vector += tfidf_matrix[idx].toarray()[0]
             count += 1
+        else:
+            print(f"⚠️ DEBUG: Course '{course}' not found in courses_list")
             
+    print(f"🔍 DEBUG: Found {count} valid courses out of {len(wishlist)}")
+    
     if count == 0:
+        print("⚠️ DEBUG: No valid courses found")
         return {"recommended_courses": []}
         
     user_vector = user_vector / count
@@ -422,24 +462,38 @@ def get_recommendations(req: WishlistRequest):
             
     return {"recommended_courses": recommended, "explanation": explanation}
 
-# Dynamically locate the built Vue/Vite production folder OR fallback to raw root
+# Dynamically locate the built Vite production folder
 backend_dir = os.path.dirname(os.path.abspath(__file__))
 dist_dir = os.path.abspath(os.path.join(backend_dir, "..", "dist"))
-raw_dir = os.path.abspath(os.path.join(backend_dir, ".."))
+fallback_dir = os.path.abspath(os.path.join(backend_dir, "..", "frontend"))
+
+print(f"📁 Backend directory: {backend_dir}")
+print(f"📁 Looking for dist at: {dist_dir}")
+print(f"📁 Fallback frontend at: {fallback_dir}")
+print(f"📁 dist exists: {os.path.exists(dist_dir)}")
+print(f"📁 frontend exists: {os.path.exists(fallback_dir)}")
 
 # --- BULLETPROOF ROUTING FOR RENDER ---
 @app.get("/")
 def serve_root():
     if os.path.exists(os.path.join(dist_dir, "index.html")):
+        print("✅ Serving from /dist/index.html")
         return FileResponse(os.path.join(dist_dir, "index.html"))
-    return FileResponse(os.path.join(raw_dir, "index.html"))
+    elif os.path.exists(os.path.join(fallback_dir, "ai.html")):
+        print("⚠️ Serving from /frontend/ai.html (dist not found)")
+        return FileResponse(os.path.join(fallback_dir, "ai.html"))
+    else:
+        print("❌ ERROR: Frontend index.html not found!")
+        return {"error": "Frontend not found"}
 
 if os.path.exists(dist_dir):
-    print("Serving optimized production Vite build from /dist")
+    print("✅ Serving optimized production Vite build from /dist")
     app.mount("/", StaticFiles(directory=dist_dir, html=True), name="static")
+elif os.path.exists(fallback_dir):
+    print("⚠️ Serving raw frontend directory (Note: Vite env vars may fail without 'npm run build')")
+    app.mount("/", StaticFiles(directory=fallback_dir, html=True), name="static")
 else:
-    print("Serving raw frontend directory (Note: Vite env vars may fail without 'npm run build')")
-    app.mount("/", StaticFiles(directory=raw_dir, html=True), name="static")
+    print("❌ ERROR: Neither /dist nor /frontend directories found!")
 
 # ----------------- PRODUCTION SERVER BINDING -----------------
 # When deployed independently (e.g. Render, Heroku), standard Python execution starts here
