@@ -16,7 +16,6 @@ Edu Navia uses a **Unified Backend Architecture** with organized project structu
 ---
 
 ## 🟢 Local Development
-
 ### Prerequisites
 - Node.js and npm
 - Python 3.10+
